@@ -34,7 +34,6 @@ proxy_name="cloudrun-authenticated-sample"
 REV=$($apigeecli apis create bundle -f "./apiproxy" -n "$proxy_name" \
   --org "$APIGEE_PROJECT_ID" --token "$TOKEN" --disable-check | jq ."revision" -r)
 
-
 $apigeecli apis deploy --wait --name "$proxy_name" \
   --ovr --rev "$REV" \
   --sa "$SA_EMAIL" \

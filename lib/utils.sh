@@ -17,13 +17,9 @@ CURL() {
   [[ -z "${CURL_OUT}" ]] && CURL_OUT=$(mktemp /tmp/appint-setup-script.curl.out.XXXXXX)
   [[ -f "${CURL_OUT}" ]] && rm ${CURL_OUT}
   #[[ $verbosity -gt 0 ]] && echo "curl $@"
-  echo "--------------------" >>"$OUTFILE"
-  echo "curl $@" >>"$OUTFILE"
   [[ $verbosity -gt 0 ]] && echo "curl $@"
   CURL_RC=$(curl -s -w "%{http_code}" -H "Authorization: Bearer $TOKEN" -o "${CURL_OUT}" "$@")
   [[ $verbosity -gt 0 ]] && echo "==> ${CURL_RC}"
-  echo "==> ${CURL_RC}" >>"$OUTFILE"
-  cat "${CURL_OUT}" >>"$OUTFILE"
 }
 
 googleapis_whoami() {
@@ -55,10 +51,8 @@ check_shell_variables() {
   }
 
   printf "Settings in use:\n"
-  printf "Settings in use:\n" >>"$OUTFILE"
-  for var_name in "${env_vars_to_check[@]}"; do
+  for var_name in "$@"; do
     printf "  %s=%s\n" "$var_name" "${!var_name}"
-    printf "  %s=%s\n" "$var_name" "${!var_name}" >>"$OUTFILE"
   done
 }
 
@@ -74,7 +68,6 @@ check_required_commands() {
   if [[ -n "$missing" ]]; then
     printf -v joined '%s,' "${missing[@]}"
     printf "\n\nThese commands are missing; they must be available on path: %s\nExiting.\n" "${joined%,}"
-    printf "\n\nThese commands are missing; they must be available on path: %s\nExiting.\n" "${joined%,}" >>"$OUTFILE"
     exit 1
   fi
 }

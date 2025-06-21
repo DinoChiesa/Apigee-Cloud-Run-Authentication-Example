@@ -14,3 +14,4 @@ notes-proxy--DO-NOT-COMMIT.txt
 **/.*~
 **/*~
 **/#*.*#
+.aider*

@@ -5,12 +5,14 @@ source ./lib/utils.sh
 
 check_shell_variables CLOUDRUN_PROJECT_ID CLOUDRUN_SERVICE_NAME CLOUDRUN_SERVICE_REGION SA_IN_CLOUDRUN_PROJECT
 
-printf "\nThis script creates and downloads a Service Account key\n"
+key_file=service-account-key.json
+sa_email="${SA_IN_CLOUDRUN_PROJECT}@${CLOUDRUN_PROJECT_ID}.iam.gserviceaccount.com"
+
+printf "\nThis script creates and downloads a Service Account key \n"
 printf "project: %s\n" "$CLOUDRUN_PROJECT_ID"
 printf "Service Account: %s\n" "$SA_IN_CLOUDRUN_PROJECT"
+printf "target file: %s\n" "$key_file"
 
-sa_email="${SA_IN_CLOUDRUN_PROJECT}@${CLOUDRUN_PROJECT_ID}.iam.gserviceaccount.com"
-key_file=service-account-key.json
 
 if [[ -f "$key_file" ]]; then
   printf "\nThe key file '%s' already exists.\n" "$key_file"
