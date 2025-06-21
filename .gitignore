@@ -1,0 +1,16 @@
+
+# Node.js dependencies:
+**/node_modules/
+
+env-private.sh
+service-account-key.json
+
+# misc
+not-used/
+notes--SETUP.txt
+notes-proxy--DO-NOT-COMMIT.txt
+.jshintrc
+**/*.*~
+**/.*~
+**/*~
+**/#*.*#
