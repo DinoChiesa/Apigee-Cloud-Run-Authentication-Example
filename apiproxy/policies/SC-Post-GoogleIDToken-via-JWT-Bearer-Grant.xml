@@ -1,0 +1,26 @@
+<ServiceCallout name='SC-Post-GoogleIDToken-via-JWT-Bearer-Grant'>
+  <Request>
+    <Set>
+      <Headers>
+        <Header name='content-type'>application/x-www-form-urlencoded</Header>
+      </Headers>
+      <FormParams>
+        <FormParam name='grant_type'>urn:ietf:params:oauth:grant-type:jwt-bearer</FormParam>
+        <FormParam name='assertion'>{jwt-bearer-assertion}</FormParam>
+      </FormParams>
+      <Verb>POST</Verb>
+    </Set>
+  </Request>
+  <Response>idTokenResponse</Response>
+  <HTTPTargetConnection>
+    <SSLInfo>
+      <Enabled>true</Enabled>
+      <Enforce>true</Enforce>
+      <IgnoreValidationErrors>false</IgnoreValidationErrors>
+    </SSLInfo>
+    <Properties>
+      <Property name='success.codes'>2xx, 3xx</Property>
+    </Properties>
+    <URL>https://www.googleapis.com/oauth2/v4/token</URL>
+  </HTTPTargetConnection>
+</ServiceCallout>

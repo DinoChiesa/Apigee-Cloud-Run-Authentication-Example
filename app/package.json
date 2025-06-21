@@ -1,0 +1,25 @@
+{
+  "name": "cloudrun-authenticated-sample",
+  "description": "simple API server, returns payloads in XML or JSON, describing what it received.",
+  "type": "module",
+  "version": "1.0.2",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Dino Chiesa",
+    "email": "dchiesa@google.com"
+  },
+  "dependencies": {
+    "console-stamp": "^3.1.2",
+    "dateformat": "^5.0.3",
+    "express": "^5.1.0",
+    "morgan": "^1.10.0"
+  },
+  "engines": {
+    "node": "^22.11.0",
+    "npm": "^10.9.0"
+  }
+}

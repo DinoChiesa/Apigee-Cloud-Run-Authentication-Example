@@ -1,0 +1,7 @@
+<AssignMessage name='AM-Identity-Token-into-Authz-Header'>
+  <Set>
+    <Headers>
+      <Header name='Authorization'>Bearer {tokenResponse.content}</Header>
+    </Headers>
+  </Set>
+</AssignMessage>

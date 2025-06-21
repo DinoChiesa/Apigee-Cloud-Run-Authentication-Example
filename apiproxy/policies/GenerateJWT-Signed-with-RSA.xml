@@ -1,0 +1,14 @@
+<GenerateJWT name='GenerateJWT-Signed-with-RSA'>
+  <Algorithm>RS256</Algorithm>
+  <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+  <PrivateKey>
+    <Value ref="private.rsa-private-key"/>
+  </PrivateKey>
+  <Issuer ref='jwt-issuer'/>
+  <Audience ref='jwt-audience'/>
+  <ExpiresIn>120s</ExpiresIn>
+  <AdditionalClaims>
+    <Claim name='target_audience'>{propertyset.settings.cloudrun_service_url}</Claim>
+  </AdditionalClaims>
+  <OutputVariable>jwt-bearer-assertion</OutputVariable>
+</GenerateJWT>

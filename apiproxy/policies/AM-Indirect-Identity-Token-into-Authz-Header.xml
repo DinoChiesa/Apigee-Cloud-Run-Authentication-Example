@@ -1,0 +1,7 @@
+<AssignMessage name='AM-Indirect-Identity-Token-into-Authz-Header'>
+  <Set>
+    <Headers>
+      <Header name='Authorization'>Bearer {jsonPath('$.id_token',idTokenResponse.content)}</Header>
+    </Headers>
+  </Set>
+</AssignMessage>

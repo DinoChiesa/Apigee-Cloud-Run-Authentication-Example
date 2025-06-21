@@ -1,0 +1,15 @@
+<AssignMessage name='AM-JWT-Elements'>
+  <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+  <AssignVariable>
+    <Name>private.rsa-private-key</Name>
+    <Template>{jsonPath('$.private_key',plaintext-sakeyjson)}</Template>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>jwt-issuer</Name>
+    <Template>{jsonPath('$.client_email',plaintext-sakeyjson)}</Template>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>jwt-audience</Name>
+    <Template>{jsonPath('$.token_uri',plaintext-sakeyjson)}</Template>
+  </AssignVariable>
+</AssignMessage>
