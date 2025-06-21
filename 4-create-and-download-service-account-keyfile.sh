@@ -11,9 +11,15 @@ printf "in the project '%s'.\n" "$CLOUDRUN_PROJECT_ID"
 sa_email="${SA_IN_CLOUDRUN_PROJECT}@${CLOUDRUN_PROJECT_ID}.iam.gserviceaccount.com"
 key_file=service-account-key.json
 
-# AI! Here, check the existence of the file noted in $key_file, and if it exists,
-# print an message to the user, and confirm that the user wants to continue
-# creating a new key file. 
+if [[ -f "$key_file" ]]; then
+  printf "\nThe key file '%s' already exists.\n" "$key_file"
+  read -p "Do you want to overwrite it and create a new key? (y/N) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    printf "Aborting.\n"
+    exit 1
+  fi
+fi
 
 rm -f "$key_file"
 if ! gcloud iam service-accounts keys create "$key_file" --iam-account "$sa_email" 2>/dev/null; then
