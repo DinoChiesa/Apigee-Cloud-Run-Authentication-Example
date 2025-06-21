@@ -8,15 +8,16 @@ check_shell_variables CLOUDRUN_PROJECT_ID CLOUDRUN_SERVICE_NAME CLOUDRUN_SERVICE
 printf "\nThis script grants invoker rights to the Cloud Run service named '%s'\n" "$CLOUDRUN_SERVICE_NAME"
 printf "in the project '%s'.\n" "$CLOUDRUN_PROJECT_ID"
 
-# AI! modify the logic here to check for two positional arguments.
-# If the first argument takes the special argument "self", then no further check is required. 
-# Otherwise, check for othe existence of the first and second,
-# and if either is missing or empty, print an appropriate message and exit. 
-
-
+if [[ "$1" != "self" ]] && ( [[ -z "$1" ]] || [[ -z "$2" ]] ); then
+    printf "\nError: Invalid arguments.\n"
+    printf "This script requires either 'self' as an argument, or a service account name and project id.\n"
+    printf "Usage: %s self\n" "$0"
+    printf "   or: %s <sa_name> <sa_project_id>\n\n" "$0"
+    exit 1
+fi
 
 if [[ "$1" == "self" ]]; then
-  printf "No input provided, will attempt to grant permission to the current user.\n"
+  printf "Granting invoke permission to the current gcloud user.\n"
   GWHOAMI=$(gcloud auth list --filter=status:ACTIVE --format="value(account)")
   if [[ -z "$GWHOAMI" ]]; then
     printf "Not authenticated to Google Cloud, cannot continue.\n"
@@ -39,5 +40,4 @@ gcloud run services add-iam-policy-binding "$CLOUDRUN_SERVICE_NAME" \
           --region "$CLOUDRUN_SERVICE_REGION" \
           --member "$PRINCIPAL" \
           --role "roles/run.invoker" \
-
 
