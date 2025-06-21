@@ -5,8 +5,9 @@ source ./lib/utils.sh
 
 check_shell_variables CLOUDRUN_PROJECT_ID CLOUDRUN_SERVICE_NAME CLOUDRUN_SERVICE_REGION SA_IN_CLOUDRUN_PROJECT
 
-printf "\nThis script grants invoker rights to the Cloud Run service named '%s'\n" "$CLOUDRUN_SERVICE_NAME"
-printf "in the project '%s'.\n" "$CLOUDRUN_PROJECT_ID"
+printf "\nThis script creates and downloads a Service Account key\n"
+printf "project: %s\n" "$CLOUDRUN_PROJECT_ID"
+printf "Service Account: %s\n" "$SA_IN_CLOUDRUN_PROJECT"
 
 sa_email="${SA_IN_CLOUDRUN_PROJECT}@${CLOUDRUN_PROJECT_ID}.iam.gserviceaccount.com"
 key_file=service-account-key.json
@@ -32,4 +33,4 @@ if ! [[ -f $key_file ]]; then
   exit 1
 fi
 
-printf "The Service Account key file has been downloaded.\n"
+printf "The Service Account key file has been downloaded: %s.\n" "$key_file"
