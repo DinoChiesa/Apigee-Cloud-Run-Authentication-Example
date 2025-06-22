@@ -7,21 +7,22 @@ containing an Identity Token.
 
 The proxy uses these approaches:
 
-- passthrough - the call into Apigee must pass an Authorization header
+- **passthrough** - the call into Apigee must pass an Authorization header
   containing an ID Token; Apigee then relays that header to the upstream Cloud
   Run service.
 
-- platform authentication - the call into Apigee does not
+- **platform authentication** - the call into Apigee does not
   carry authentication. The Apigee proxy uses Apigee to automatically obtain an
   Identity token for use with the upstream Cloud Run service.
 
-- "impersonation" authentication - the proxy calls into the IAM credentials endpoint to
-  "manually" obtain an Identity token for use with the upstream Cloud Run
-  service.
+- **impersonated** authentication - the proxy calls into the IAM credentials
+  endpoint to "manually" obtain an Identity token for a dynamically-specified
+  service account for use with the upstream Cloud Run service.
 
-- "indirect" authentication - the proxy calls into Secret Manager to retrieve a
-  key file for a 2nd service account, and then uses _that key_ to obtain an
-  Identity token for use with the upstream Cloud Run service.
+- **indirect** authentication - the proxy calls into Secret Manager to retrieve
+  a key file for a 2nd service account, and then uses _that key_ to create a
+  signed request for an Identity token for use with the upstream Cloud Run
+  service.
 
 
 None of these options use [IAP](https://cloud.google.com/security/products/iap?e=48754805&hl=en) in front of
@@ -114,15 +115,15 @@ To prepare:
    ./5-upload-service-account-key-to-secret-manager.sh
    ```
 
-5. Grant permission to invoke the cloud run service, to the two service accounts, and to your self,
+5. Grant permission to invoke the cloud run service, to your self,
    if you like:
    ```sh
-   ./6-grant_access-to-cloud-run-service-to-sa.sh ${SA_FOR_APIGEE_PROXY} ${APIGEE_PROJECT_ID}
-   ./6-grant_access-to-cloud-run-service-to-sa.sh ${SA_IN_CLOUDRUN_PROJECT} ${CLOUDRUN_PROJECT_ID}
    ./6-grant_access-to-cloud-run-service-to-sa.sh "self"
    ```
 
    You will need to grant yourself access if you want to test the "passthrough" approach.
+   The scripts that create the service accounts previously granted permission
+   to those accounts on the Cloud Run service.
 
 5. install apigeecli
    ```sh
@@ -133,7 +134,7 @@ To prepare:
    Service, and the metadata (name and version) for the Secret.
 
    ```sh
-   ./8-update-proxy-with-cloud-run-url.sh
+   ./8-update-proxy-with-cloud-run-url-and-secret-version.sh
    ```
 
 5. Import and deploy the API proxy.
@@ -180,12 +181,17 @@ To prepare:
    endpoint. The SA that the  Apigee proxy is running as, must have `iam.serviceAccountTokenCreator`
    role on the Service Account that it requests an Identity Token for.  (This is true even
    if the Service Account requested is the same identity as the caller!, ie if
-   a Service Account is requesting an Identity Token for itself.)
+   a Service Account is requesting an Identity Token _for itself_.)
 
-   This works like the previous case, and uses the same service account, but
-   your API Proxy logic is obtaining the ID token "manually" with a network
-   call, and in this case, does not cache it (though you could add to the proxy
-   logic, to do so).
+   This works like the previous case, and _in this example_, it uses the same
+   service account, but that is not a requirement.  Your API proxy could
+   impersonate any Service Account, that it has the right role for.  And that
+   can be dynamically determined at runtime, if you have a need for that. your
+   API Proxy logic is obtaining the ID token "manually" with a network call, for
+   whatever service account it needs.
+
+   This sample does not cache the retrieved token; that would be straightforward
+   to implement but I thought it would clutter the implementation here.
 
    The "impersonated" Service account must have `run.invoker` role on the Cloud
    Run service, in order for this to work. In that case, you will see a happy

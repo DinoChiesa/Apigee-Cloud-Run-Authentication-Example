@@ -69,8 +69,8 @@ printf "\n"
 read -p "This will delete resources. Are you sure you want to continue? (y/N) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    printf "Aborting.\n"
-    exit 1
+  printf "Aborting.\n"
+  exit 1
 fi
 
 key_file=service-account-key.json
@@ -85,16 +85,44 @@ delete_apiproxy "${proxy_name}" "${APIGEE_PROJECT_ID}"
 if gcloud run services describe "${CLOUDRUN_SERVICE_NAME}" \
   --region "$CLOUDRUN_SERVICE_REGION" \
   --project "${CLOUDRUN_PROJECT_ID}" 2>/dev/null; then
+  printf "\nRemoving run.invoker iam-binding for the Cloud Run service....\n"
+  sa_email="${SA_IN_CLOUDRUN_PROJECT}@${CLOUDRUN_PROJECT_ID}.iam.gserviceaccount.com"
+  gcloud run services remove-iam-policy-binding "${CLOUDRUN_SERVICE_NAME}" \
+    --region "$CLOUDRUN_SERVICE_REGION" \
+    --member="serviceAccount:${sa_email}" \
+    --role="roles/run.invoker" \
+    --project "${CLOUDRUN_PROJECT_ID}"
+
+  sa_email="${SA_FOR_APIGEE_PROXY}@${APIGEE_PROJECT_ID}.iam.gserviceaccount.com"
+  gcloud run services remove-iam-policy-binding "${CLOUDRUN_SERVICE_NAME}" \
+    --region "$CLOUDRUN_SERVICE_REGION" \
+    --member="serviceAccount:${sa_email}" \
+    --role="roles/run.invoker" \
+    --project "${CLOUDRUN_PROJECT_ID}"
+
+  GWHOAMI=$(gcloud auth list --filter=status:ACTIVE --format="value(account)")
+  gcloud run services remove-iam-policy-binding "${CLOUDRUN_SERVICE_NAME}" \
+    --region "$CLOUDRUN_SERVICE_REGION" \
+    --member="user:${GWHOAMI}" \
+    --role="roles/run.invoker" \
+    --project "${CLOUDRUN_PROJECT_ID}"
+  sleep 3
+
   printf "\nDeleting the Cloud Run service....\n"
   gcloud run services delete "${CLOUDRUN_SERVICE_NAME}" \
     --region "$CLOUDRUN_SERVICE_REGION" \
     --project "${CLOUDRUN_PROJECT_ID}" --quiet
 else
   printf "\nthe Cloud Run service does not exist....\n"
-
 fi
 
 if gcloud secrets describe "$SECRET_NAME" --project="$APIGEE_PROJECT_ID" --quiet >/dev/null 2>&1; then
+  printf "\nRemoving secretAccessor iam-binding...\n"
+  sa_email="${SA_FOR_APIGEE_PROXY}@${APIGEE_PROJECT_ID}.iam.gserviceaccount.com"
+  gcloud secrets remove-iam-policy-binding "${SECRET_NAME}" \
+    --project="$APIGEE_PROJECT_ID" \
+    --member="serviceAccount:${sa_email}" \
+    --role="roles/secretmanager.secretAccessor"
   printf "\nDeleting secret (%s)...\n" "${SECRET_NAME}"
   gcloud secrets delete "$SECRET_NAME" --project="$APIGEE_PROJECT_ID" --quiet
 else

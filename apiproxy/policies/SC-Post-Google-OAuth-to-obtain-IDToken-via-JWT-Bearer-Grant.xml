@@ -1,4 +1,4 @@
-<ServiceCallout name='SC-Post-GoogleIDToken-via-JWT-Bearer-Grant'>
+<ServiceCallout name='SC-Post-Google-OAuth-to-obtain-IDToken-via-JWT-Bearer-Grant'>
   <Request>
     <Set>
       <Headers>
@@ -21,6 +21,6 @@
     <Properties>
       <Property name='success.codes'>2xx, 3xx</Property>
     </Properties>
-    <URL>https://www.googleapis.com/oauth2/v4/token</URL>
+    <URL>https://oauth2.googleapis.com/token</URL>
   </HTTPTargetConnection>
 </ServiceCallout>

@@ -31,7 +31,7 @@
           <Name>GenerateJWT-Signed-with-RSA</Name>
         </Step>
         <Step>
-          <Name>SC-Post-GoogleIDToken-via-JWT-Bearer-Grant</Name>
+          <Name>SC-Post-Google-OAuth-to-obtain-IDToken-via-JWT-Bearer-Grant</Name>
         </Step>
         <Step>
           <Name>AM-Indirect-Identity-Token-into-Authz-Header</Name>
