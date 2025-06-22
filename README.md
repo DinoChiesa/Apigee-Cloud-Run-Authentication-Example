@@ -108,6 +108,10 @@ To prepare:
    ./4-create-and-download-service-account-keyfile.sh
    ```
 
+   > **Please note!** Google [recommends against creating and downloading
+   > service account keys](https://cloud.google.com/iam/docs/best-practices-service-accounts#service-account-keys),
+   > if it can be avoided. There are usually better ways.
+
 5. Upload that service account key file to Secret Manager in the Apigee project.
 
    This is also necessary to use the "indirect" approach.
@@ -209,10 +213,14 @@ To prepare:
 
    In this case, the Apigee proxy, running with the identity of a service
    account, retrieves credentials for a _separate_ service account, from the
-   Secret Manager. The proxy then uses the private key retrieved from Secret
-   Manager to construct an assertion and sends that assertion in a request to
-   the oauth2.googleapis.com, to manually request an ID Token, on behalf of the
-   2nd Service Account identity, the identity corresponding to the retrieved
+   Secret Manager. I'll repeat: Google [recommends against creating and downloading
+   service account keys](https://cloud.google.com/iam/docs/best-practices-service-accounts#service-account-keys),
+   if it can be avoided. There are usually better ways. But it's still possible.
+
+   The proxy uses the private key retrieved from Secret Manager to construct an
+   assertion and sends that assertion in a request to the oauth2.googleapis.com
+   endpoint, to manually request an ID Token, on behalf of the 2nd Service
+   Account identity, the identity corresponding to the retrieved
    credentials. Apigee sends that ID Token to the upstream Cloud Run service.
 
    If the 2nd Service account has `run.invoker` role on the Cloud Run service,
