@@ -65,6 +65,7 @@ apigeecli="$HOME/.apigeecli/bin/apigeecli"
 TOKEN=$(gcloud auth print-access-token)
 proxy_name="cloudrun-authenticated-sample"
 
+# AI! Prompt the user here to make sure they want to continue.
 
 key_file=service-account-key.json
 
