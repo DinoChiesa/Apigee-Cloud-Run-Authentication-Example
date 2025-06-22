@@ -13,7 +13,7 @@ The proxy uses these approaches:
 
 - "impersonation" authentication - the proxy calls into the IAM credentials endpoint to
   "manually" obtain an Identity token for use with the upstream Cloud Run
-  service. 
+  service.
 
 - "indirect" authentication - the proxy calls into Secret Manager to retrieve a
   key file for a 2nd service account, and then uses _that key_ to obtain an
@@ -37,10 +37,9 @@ as well as the API Proxy configuration.
 
 You need these things:
 
-    * [gcloud SDK](https://cloud.google.com/sdk/docs/install)
-    * unzip
-    * curl
-    * jq
+  * bash
+  * the [gcloud cli](https://cloud.google.com/sdk/docs/install)
+  * unzip, curl, jq, sed, mktemp
 
 You can get all of this in [Google Cloud Shell](https://cloud.google.com/shell/docs/launching-cloud-shell).
 
@@ -204,5 +203,3 @@ This is open-source software, and is not a supported part of Apigee. If
 you need assistance, you can try inquiring on [the Google Cloud Community forum
 dedicated to Apigee](https://goo.gle/apigee-community) There is no service-level
 guarantee for responses to inquiries posted to that site.
-
-
