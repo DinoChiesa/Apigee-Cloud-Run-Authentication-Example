@@ -40,6 +40,12 @@ This sample is [Copyright © 2025 Google LLC](./NOTICE).
 and is licensed under the [Apache 2.0 License](LICENSE). This includes the bash scripts, the nodejs code,
 as well as the API Proxy configuration.
 
+## Screencast
+
+There's a [screencast](https://youtu.be/63QoqT2x_-c) on YouTube walking through this example.
+
+[![screenshot](img/5tsv4f3Ex2YKqsb.png)](https://youtu.be/63QoqT2x_-c)
+
 ## Using the Sample
 
 ### Prerequisites
