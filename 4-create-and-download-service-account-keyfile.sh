@@ -35,4 +35,4 @@ if ! [[ -f $key_file ]]; then
   exit 1
 fi
 
-printf "The Service Account key file has been downloaded: %s.\n" "$key_file"
+printf "\nThe Service Account key file has been downloaded: %s.\n\n" "$key_file"

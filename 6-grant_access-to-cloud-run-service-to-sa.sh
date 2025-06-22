@@ -10,7 +10,7 @@ printf "in the project '%s'.\n" "$CLOUDRUN_PROJECT_ID"
 
 if [[ "$1" != "self" ]] && ( [[ -z "$1" ]] || [[ -z "$2" ]] ); then
     printf "\nError: Invalid arguments.\n"
-    printf "This script requires either 'self' as an argument, or a service account name and project id.\n"
+    printf "This script requires either 'self' as an argument, or a (short) service account name and project id.\n"
     printf "Usage: %s self\n" "$0"
     printf "   or: %s <sa_name> <sa_project_id>\n\n" "$0"
     exit 1

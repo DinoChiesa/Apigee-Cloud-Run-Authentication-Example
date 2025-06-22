@@ -60,8 +60,120 @@ To prepare:
 
 2. deploy the Cloud Run service.
    ```sh
-   1-deploy-cloud-run-service.sh
+   ./1-deploy-cloud-run-service.sh
    ```
 
-Follow the steps to provision
+3. create a service account in the Apigee project
+   ```sh
+   ./2-create-service-account-in-apigee-local-project.sh
+   ```
 
+3. create a service account in the Cloud Run project
+   ```sh
+   ./3-create-service-account-in-cloudrun-remote-project.sh
+   ```
+
+4. Create and download the service account key file.
+   ```sh
+   ./4-create-and-download-service-account-keyfile.sh
+   ```
+
+5. Upload the service account key file to Secret Manager
+   ```sh
+   ./5-upload-service-account-key-to-secret-manager.sh
+   ```
+
+5. Grant permission to invoke the cloud run service, to the two service accounts
+   ```sh
+   ./6-grant_access-to-cloud-run-service-to-sa.sh ${SA_FOR_APIGEE_PROXY} ${APIGEE_PROJECT_ID}
+   ./6-grant_access-to-cloud-run-service-to-sa.sh ${SA_IN_CLOUDRUN_PROJECT} ${CLOUDRUN_PROJECT_ID}
+   ```
+
+5. install apigeecli
+   ```sh
+   ./7-install-apigeecli.sh
+   ```
+
+5. Update the Apigee proxy with the URL for the Cloud Run Service, and the metadata (name and version) for the Secret.
+   ```sh
+   ./8-update-proxy-with-cloud-run-url.sh
+   ```
+
+5. Import and deploy the API proxy.
+   ```sh
+   ./9-import-and-deploy-apigee-proxy.sh
+   ```
+
+## Invoking the API proxy
+
+1. Use passthrough authentication.
+
+   Here, you obtain your own ID Token, and send it into the Apigee API proxy.
+   The proxy relays that token to the upstream Cloud Run service. If you
+   have run.invoker permissions on the Cloud Run service, you will see a happy message.
+
+   ```sh
+   IDTOKEN=$(gcloud auth print-identity-token)
+   curl -i -X GET -H "Authorization: Bearer $IDTOKEN"  -H "auth-type: passthrough" \
+       https://${APIGEE_HOST}/v1/samples/cloudrun-authenticated-sample/status
+   ```
+
+   In the output, you should a json payload. The email of the caller should be _your email_.
+
+
+2. Use Platform authentication.
+
+   In this case, Apigee obtains an ID Token, on behalf of its Service Account
+   identity. Apigee sends that ID Token to the upstream Cloud Run service.  The
+   Service account has run.invoker permissions on the Cloud Run service, so you
+   will see a happy message.
+
+   ```sh
+   curl -i -X GET -H "auth-type: platform" https://${APIGEE_HOST}/v1/samples/cloudrun-authenticated-sample/status
+   ```
+
+   In the output, the json payload should show the email address and subject ID
+   of the Apigee service account.
+
+3. Use "Impersonation"
+
+   In this case, the Apigee proxy is configured to manually request an ID Token,
+   on behalf of a configured Service Account identity, from the Google Cloud IAM
+   endpoint. The SA that the  Apigee proxy is running as, must have `iam.serviceAccountTokenCreator`
+   role on the Service Account that it requests an Identity Token for.  (This is true even
+   if the Service Account requested is the same identity as the caller!)
+
+   This works like the previous case, but your API Proxy logic is obtaining the
+   ID token "manually" with a network call, and in this case, does not cache it
+   (though you could add to the proxy logic, to do so).
+
+   The "impersonated" Service account must have `run.invoker` role on the Cloud
+   Run service, in order for this to work. In that case, you will see a happy
+   message.
+
+   ```sh
+   curl -i -X GET -H "auth-type: impersonated" https://${APIGEE_HOST}/v1/samples/cloudrun-authenticated-sample/status
+   ```
+
+   In the output, the json payload should show the email and subject ID of the
+   impersonated service account, which may be the same as the above.
+
+1. Use "Indirect" authentication.
+
+   In this case, The Apigee proxy is configured to retrieve credentials for a
+   _separate_ service account, from the Secret Manager. The proxy then uses the
+   private key retrieved from there to construct an assertion and sends that
+   assertion in a request to the oauth2.googleapis.com, to manually request an
+   ID Token, on behalf of the Service Account identity corresponding to the
+   retrieved credentials. Apigee sends that ID Token to the upstream Cloud Run
+   service.
+
+   The Service account has run.invoker permissions on the Cloud Run service, so
+   you will see a happy message.
+
+   ```sh
+
+   ```
+
+   In the output, the json payload should show the email and subject ID of the
+   second (possibly remote) service account.

@@ -1,16 +1,16 @@
-// echo-server.js
-// -------------------------------------------------------------
+// Copyright © 2025 Google LLC.
 //
-// simple server in nodejs with express.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-// For use with a HealthMonitor, can mark this service healthy / unhealthy via:
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
-//  POST /status?offline=false
-//
-//  POST /status?offline=true
-//
-// Can inquire health via
-//  GET /status
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 
 /* jshint esversion:9, strict:implied, node:true */
@@ -28,7 +28,7 @@ const PORT = process.env.PORT || 8080;
 const k_service = process.env.K_SERVICE || "-unknown-";
 const k_revision = process.env.K_REVISION || "-unknown-";
 const runningInCloudRun = () => process.env.K_SERVICE && process.env.K_REVISION;
-const runningLocally = () => !inCloudRun();
+const runningLocally = () => !runningInCloudRun();
 
 let logFormat = ":method :url :status :res[content-length] - :response-time ms";
 
@@ -70,7 +70,16 @@ function unhandledRequest(_req, response, _next) {
     .end();
 }
 
-function statusRequestHandler(_request, response, next) {
+function statusRequestHandler(request, response, next) {
+  // parse the JWT ID Token
+  const authz = request.header("Authorization");
+  let parts = authz && authz.split(" ");
+  const token = parts && parts.length == 2 && parts[1]; // a JWT
+  parts = token && token.split(".");
+  const payloadString =
+    parts && parts[1] && Buffer.from(parts[1], "base64url").toString("utf8");
+  const payload = payloadString && JSON.parse(payloadString);
+
   response.header("Content-Type", "application/json");
   const body = {
     app: {
@@ -79,6 +88,10 @@ function statusRequestHandler(_request, response, next) {
       k_service,
       k_revision,
       serviceAccount,
+    },
+    caller: {
+      email: payload && payload.email,
+      sub: payload && payload.sub,
     },
     engines: {
       node: process.versions.node,
@@ -96,9 +109,7 @@ function statusRequestHandler(_request, response, next) {
   response
     .header("x-powered-by", "node/express")
     .status(200)
-    .send(JSON.stringify(body, null, 2) + "\n")
-    .end();
-  next();
+    .send(JSON.stringify(body, null, 2) + "\n");
 }
 
 function echoRequestHandler(request, response, next) {

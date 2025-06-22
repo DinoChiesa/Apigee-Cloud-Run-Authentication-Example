@@ -20,14 +20,14 @@ SA_EMAIL="${SA_FOR_APIGEE_PROXY}@${APIGEE_PROJECT_ID}.iam.gserviceaccount.com"
 
 printf "\nThis script imports and deploys the Apigee API Proxy for this sample,\n"
 printf "into the Apigee project '%s'\n" "$APIGEE_PROJECT_ID"
-printf "using the service account '%s'\n" "$SA_EMAIL"
+printf "using the service account '%s'\n\n" "$SA_EMAIL"
 
 if ! [[ -d "$HOME/.apigeecli/bin" ]]; then
   printf "\nCannot find apigeecli in the expected place.  You may need to install it.\n"
   exit 1
 fi
 
-apigeecli="$HOME/.apigeecli/bin"
+apigeecli="$HOME/.apigeecli/bin/apigeecli"
 TOKEN=$(gcloud auth print-access-token)
 proxy_name="cloudrun-authenticated-sample"
 

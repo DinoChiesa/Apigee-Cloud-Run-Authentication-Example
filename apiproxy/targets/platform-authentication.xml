@@ -34,8 +34,10 @@
     <Authentication>
       <GoogleIDToken>
         <Audience ref='propertyset.settings.cloudrun_service_url'/>
+        <IncludeEmail>true</IncludeEmail>
       </GoogleIDToken>
     </Authentication>
+
     <SSLInfo>
       <Enabled>true</Enabled>
       <Enforce>true</Enforce>

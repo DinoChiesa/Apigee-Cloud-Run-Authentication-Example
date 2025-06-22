@@ -14,12 +14,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<TargetEndpoint name="manual-authentication">
+<TargetEndpoint name="impersonated-authentication">
   <PreFlow name="PreFlow">
     <Request>
       <!-- this should be cached! -->
       <Step>
-        <Name>SC-Get-Identity-Token-from-Metadata</Name>
+        <Name>SC-Get-Identity-Token-from-IAM</Name>
       </Step>
       <Step>
         <Name>AM-Identity-Token-into-Authz-Header</Name>

@@ -1,0 +1,36 @@
+<ServiceCallout continueOnError='true' name='SC-Get-Identity-Token-from-IAM'>
+  <Request variable='simplePostRequest'>
+    <Set>
+      <Verb>POST</Verb>
+      <Payload contentType='text/plain'>{
+  "audience": "{escapeJSON(propertyset.settings.cloudrun_service_url)}",
+  "includeEmail": true
+}</Payload>
+    </Set>
+    <!-- avoid a runtime problem with double-slash in the json payload -->
+    <Set>
+      <Headers>
+        <Header name='Conntent-type'>application/json</Header>
+      </Headers>
+    </Set>
+  </Request>
+  <Response>tokenResponse</Response>
+  <HTTPTargetConnection>
+    <Authentication>
+      <GoogleAccessToken>
+        <Scopes>
+          <Scope>https://www.googleapis.com/auth/cloud-platform</Scope>
+        </Scopes>
+      </GoogleAccessToken>
+    </Authentication>
+    <SSLInfo>
+      <Enabled>true</Enabled>
+      <Enforce>true</Enforce>
+      <IgnoreValidationErrors>false</IgnoreValidationErrors>
+    </SSLInfo>
+    <Properties>
+      <Property name='success.codes'>2xx</Property>
+    </Properties>
+    <URL>https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/{propertyset.settings.sa_to_impersonate}:generateIdToken</URL>
+  </HTTPTargetConnection>
+</ServiceCallout>

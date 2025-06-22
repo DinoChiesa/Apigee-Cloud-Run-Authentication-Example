@@ -8,6 +8,8 @@ check_required_commands gcloud jq
 
 printf "\nThis script checks and maybe creates a Service Account in the Cloud Run project.\n"
 printf "Service account name: %s\n" "$SA_IN_CLOUDRUN_PROJECT"
-printf "Service Account project: %s\n" "$CLOUDRUN_PROJECT_ID"
+printf "Service Account project: %s\n\n" "$CLOUDRUN_PROJECT_ID"
 
 create_sa_and_apply_permissions "$SA_IN_CLOUDRUN_PROJECT" "$CLOUDRUN_PROJECT_ID"
+
+printf "\nOk.\n\n"

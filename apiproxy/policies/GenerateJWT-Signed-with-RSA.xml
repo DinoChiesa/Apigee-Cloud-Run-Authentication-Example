@@ -8,7 +8,7 @@
   <Audience ref='jwt-audience'/>
   <ExpiresIn>120s</ExpiresIn>
   <AdditionalClaims>
-    <Claim name='target_audience'>{propertyset.settings.cloudrun_service_url}</Claim>
+    <Claim name='target_audience' ref='propertyset.settings.cloudrun_service_url'>-not-set-</Claim>
   </AdditionalClaims>
   <OutputVariable>jwt-bearer-assertion</OutputVariable>
 </GenerateJWT>

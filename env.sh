@@ -18,9 +18,11 @@ export APIGEE_PROJECT_ID=project-id-1
 export APIGEE_ENV=test
 export SA_FOR_APIGEE_PROXY=sample-anything-you-like
 export APIGEE_HOST=something.specific.for.you.com
+export SECRET_NAME=sample-sakey-json
 
 export CLOUDRUN_PROJECT_ID=project-id-2
 export CLOUDRUN_SERVICE_NAME=cloudrun-authenticated-sample
 export CLOUDRUN_SERVICE_REGION=us-west1
 export SA_IN_CLOUDRUN_PROJECT=sample-anything-10882b
+
 
