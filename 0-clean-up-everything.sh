@@ -65,7 +65,13 @@ apigeecli="$HOME/.apigeecli/bin/apigeecli"
 TOKEN=$(gcloud auth print-access-token)
 proxy_name="cloudrun-authenticated-sample"
 
-# AI! Prompt the user here to make sure they want to continue.
+printf "\n"
+read -p "This will delete resources. Are you sure you want to continue? (y/N) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    printf "Aborting.\n"
+    exit 1
+fi
 
 key_file=service-account-key.json
 
@@ -98,11 +104,13 @@ fi
 sa_email="${SA_IN_CLOUDRUN_PROJECT}@${CLOUDRUN_PROJECT_ID}.iam.gserviceaccount.com"
 if gcloud iam service-accounts describe "$sa_email" --quiet >/dev/null 2>&1; then
   printf "\nDeleting the service account in the Cloud Run project (%s) ....\n" "$sa_email"
-  gcloud iam service-accounts delete "$sa_email"
+  gcloud iam service-accounts delete "$sa_email" --quiet
 fi
 
 sa_email="${SA_FOR_APIGEE_PROXY}@${APIGEE_PROJECT_ID}.iam.gserviceaccount.com"
 if gcloud iam service-accounts describe "$sa_email" --quiet >/dev/null 2>&1; then
   printf "\nDeleting the service account in the Apigee project (%s) ....\n" "$sa_email"
-  gcloud iam service-accounts delete "$sa_email"
+  gcloud iam service-accounts delete "$sa_email" --quiet
 fi
+
+printf "\n\nOk.\n"
