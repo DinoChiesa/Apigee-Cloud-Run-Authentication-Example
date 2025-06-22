@@ -1,4 +1,4 @@
-# connect into a Cloud Run Service from an Apigee Proxy
+# Connect into a Cloud Run Service from an Apigee Proxy
 
 This sample demonstrates various ways to connect into a Cloud Run Service from
 an Apigee Proxy. In all cases the Cloud Run service requires Authentication.
@@ -6,19 +6,30 @@ an Apigee Proxy. In all cases the Cloud Run service requires Authentication.
 The proxy uses these approaches:
 
 - passthrough - the caller must pass an Authorization header, which is relayed
-  to the upstream Cloud Run service
+  to the upstream Cloud Run service.
 
 - platform authentication - the proxy uses Apigee to automatically obtain an
-  Identity token for use with the upstream Cloud Run service
+  Identity token for use with the upstream Cloud Run service.
 
-- "manual" authentication - the proxy calls into the metadata endpoint to
+- "impersonation" authentication - the proxy calls into the IAM credentials endpoint to
   "manually" obtain an Identity token for use with the upstream Cloud Run
-  service
+  service. 
 
 - "indirect" authentication - the proxy calls into Secret Manager to retrieve a
   key file for a 2nd service account, and then uses _that key_ to obtain an
   Identity token for use with the upstream Cloud Run service.
 
+
+## Disclaimer
+
+This sample is not an official Google product, nor is it part of an
+official Google product.
+
+## License
+
+This sample is [Copyright © 2025 Google LLC](./NOTICE).
+and is licensed under the [Apache 2.0 License](LICENSE). This includes the bash scripts, the nodejs code,
+as well as the API Proxy configuration.
 
 ## Using the Sample
 
@@ -141,7 +152,7 @@ To prepare:
    on behalf of a configured Service Account identity, from the Google Cloud IAM
    endpoint. The SA that the  Apigee proxy is running as, must have `iam.serviceAccountTokenCreator`
    role on the Service Account that it requests an Identity Token for.  (This is true even
-   if the Service Account requested is the same identity as the caller!, ie if 
+   if the Service Account requested is the same identity as the caller!, ie if
    a Service Account is requesting an Identity Token for itself.)
 
    This works like the previous case, but your API Proxy logic is obtaining the
@@ -182,5 +193,16 @@ To prepare:
 
 ## Cleanup
 
-There is no cleanup script (yet).
+Run the cleanup script to remove all the assets:
+```sh
+./0-clean-up-everything.sh
+```
+
+## Support
+
+This is open-source software, and is not a supported part of Apigee. If
+you need assistance, you can try inquiring on [the Google Cloud Community forum
+dedicated to Apigee](https://goo.gle/apigee-community) There is no service-level
+guarantee for responses to inquiries posted to that site.
+
 
